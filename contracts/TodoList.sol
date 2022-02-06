@@ -31,9 +31,9 @@ contract TodoList {
     }
 
     function createTask(string memory _content, uint256 _date, bool _dateIncluded) public {
-        tasks[taskCount] = Task(taskCount, _content, false, _date, _dateIncluded);
-        emit TaskCreated(taskCount, _content, false, _date, _dateIncluded);
-        taskCount++;
+        //tasks[taskCount] = Task(taskCount, _content, false, _date, _dateIncluded);
+        //emit TaskCreated(taskCount, _content, false, _date, _dateIncluded);
+        //taskCount++;
     }
 
     function toggleCompleted(uint _id) public {

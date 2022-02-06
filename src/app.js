@@ -77,39 +77,23 @@ App = {
             const taskCompleted = task[2]
             const taskDate = task[3]
             const taskDateIncluded = task[4]
+            // learn what words and concepts mean that you need to know first like what are blocks vs transactions, what is mining and how does it work, does 
+            // every block need to be mined, if every block has to be mined first then how can authors of transactions to it immediately.
 
             let taskDateObject = new Date(taskDate * 1000)
-            console.log(taskDateObject)
-            console.log(taskDateIncluded)
             let contentText
             if(taskDateIncluded)
                 contentText = `${taskContent} (${taskDateObject})`
             else contentText = taskContent
 
-            const $newTaskTemplate = $taskTemplate.clone()
-            $newTaskTemplate.find('.content').html(contentText)
-            $newTaskTemplate.find('input')
-                            .prop('name', taskId)
-                            .prop('checked', taskCompleted)
-                            .on('click', App.toggleCompleted)
-            
-            // put the task in the correct list
-            if (taskCompleted) {
-                $('#completedTaskList').append($newTaskTemplate)
-            } else {
-                $('#taskList').append($newTaskTemplate)
-            }
-
-            // phow the task
-            $newTaskTemplate.show()
+            $('#tasksList').append($('<li></li>').text(contentText))
         }
     },
 
-    createTask: async () => {
-        App.setLoading(true)
-        const content = $('#newTask').val()
-        await App.todoList.createTask(content, {from: App.account})
-        window.location.reload()
+    createTask: async (content, date, dateIncluded) => {
+        console.log(App.account)
+        await App.todoList.createTask("test", 0, false, {from: App.account})
+        //await App.todoList.createTask(content, date, dateIncluded, {from: App.account})
     },
 
     toggleCompleted : async (e) => {
@@ -136,5 +120,23 @@ App = {
 $(() => {
     $(window).load(() => {
         App.load();
+    })
+
+    $(document).on('submit', 'form', (e) => {
+        e.preventDefault()
+
+        contentInput = $('#contentInput')
+        dateInput = $('#dateInput') 
+        dateIncludedCb = $('#dateIncludedCb')
+
+        taskContent = contentInput.val()
+        taskDate = dateInput.val()
+        includeDate = dateIncludedCb.prop("checked")
+
+        console.log(taskContent + "," + taskDate + "," + includeDate)
+
+        App.createTask(taskContent, 0, true)
+
+        window.location.reload()
     })
 })
