@@ -45,7 +45,6 @@ App = {
         const todoList = await $.getJSON('TodoList.json');
         App.contracts.TodoList = TruffleContract(todoList);
         App.contracts.TodoList.setProvider(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
-        //App.contracts.TodoList.setProvider(ethereum);
         App.todoList = await App.contracts.TodoList.deployed();
     },
 
@@ -71,29 +70,53 @@ App = {
         const $taskTemplate = $('.taskTemplate')
 
         // render tasks with task template
-        for(var i = 1; i <= taskCount; i++){
+        for(var i = 0; i < taskCount; i++){
             const task = await App.todoList.tasks(i)
-            const taskId = task[0]
+            const taskId = task[0].toNumber()
             const taskContent = task[1]
             const taskCompleted = task[2]
+            const taskDate = task[3]
+            const taskDateIncluded = task[4]
+
+            let taskDateObject = new Date(taskDate * 1000)
+            console.log(taskDateObject)
+            console.log(taskDateIncluded)
+            let contentText
+            if(taskDateIncluded)
+                contentText = `${taskContent} (${taskDateObject})`
+            else contentText = taskContent
 
             const $newTaskTemplate = $taskTemplate.clone()
-            $newTaskTemplate.find('.content').html(taskContent)
+            $newTaskTemplate.find('.content').html(contentText)
             $newTaskTemplate.find('input')
                             .prop('name', taskId)
                             .prop('checked', taskCompleted)
-                            //.on('click', App.toggleCompleted)
+                            .on('click', App.toggleCompleted)
             
-            // Put the task in the correct list
+            // put the task in the correct list
             if (taskCompleted) {
                 $('#completedTaskList').append($newTaskTemplate)
             } else {
                 $('#taskList').append($newTaskTemplate)
             }
 
-            // Show the task
+            // phow the task
             $newTaskTemplate.show()
         }
+    },
+
+    createTask: async () => {
+        App.setLoading(true)
+        const content = $('#newTask').val()
+        await App.todoList.createTask(content, {from: App.account})
+        window.location.reload()
+    },
+
+    toggleCompleted : async (e) => {
+        App.setLoading(true);
+        const taskId = e.target.name
+        await App.todoList.toggleCompleted(taskId, {from: App.account})
+        window.location.reload();
     },
 
     setLoading: (boolean) => {
@@ -102,7 +125,7 @@ App = {
         const content = $('#content')
         if (boolean) {
             loader.show()
-            content.hide()
+            content.hide() 
         } else {
             loader.hide()
             content.show()

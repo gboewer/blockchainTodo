@@ -1,0 +1,15 @@
+-- Add at what time you need to do something, so date and a time fields in the task --
+If a todo is due today or is to be done today then it shows up in a "my day" list
+
+Due until, do at (different kinds of tasks)
+
+Make a todolist client for myself, exactly how I like it.
+Make this tutorial my own project and just build on top of it.
+
+Build on top of me and jannes website
+
+ui for entering new tasks
+
+make website not have to reload completely
+
+-- add option to delete tasks --
